@@ -407,6 +407,7 @@ class _QuizCreatorPageWidgetState extends State<QuizCreatorPageWidget> {
                                     questionDesc:
                                         _model.questionController.text,
                                     correctIndex: 1,
+                                    image: _model.uploadedFileUrl,
                                     fieldValues: {
                                       'options': functions.createIntoList(
                                           _model.optionAController.text,
