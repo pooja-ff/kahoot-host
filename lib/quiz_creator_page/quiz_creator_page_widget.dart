@@ -1,10 +1,8 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
-import '/backend/firebase_storage/storage.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/upload_data.dart';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +33,7 @@ class _QuizCreatorPageWidgetState extends State<QuizCreatorPageWidget> {
     _model.optionBController ??= TextEditingController();
     _model.optionCController ??= TextEditingController();
     _model.optionDController ??= TextEditingController();
+    _model.textController6 ??= TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
@@ -60,85 +59,6 @@ class _QuizCreatorPageWidgetState extends State<QuizCreatorPageWidget> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 20.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      final selectedMedia = await selectMedia(
-                        imageQuality: 73,
-                        mediaSource: MediaSource.photoGallery,
-                        multiImage: false,
-                      );
-                      if (selectedMedia != null &&
-                          selectedMedia.every((m) =>
-                              validateFileFormat(m.storagePath, context))) {
-                        setState(() => _model.isDataUploading = true);
-                        var selectedUploadedFiles = <FFUploadedFile>[];
-                        var downloadUrls = <String>[];
-                        try {
-                          selectedUploadedFiles = selectedMedia
-                              .map((m) => FFUploadedFile(
-                                    name: m.storagePath.split('/').last,
-                                    bytes: m.bytes,
-                                    height: m.dimensions?.height,
-                                    width: m.dimensions?.width,
-                                    blurHash: m.blurHash,
-                                  ))
-                              .toList();
-
-                          downloadUrls = (await Future.wait(
-                            selectedMedia.map(
-                              (m) async =>
-                                  await uploadData(m.storagePath, m.bytes),
-                            ),
-                          ))
-                              .where((u) => u != null)
-                              .map((u) => u!)
-                              .toList();
-                        } finally {
-                          _model.isDataUploading = false;
-                        }
-                        if (selectedUploadedFiles.length ==
-                                selectedMedia.length &&
-                            downloadUrls.length == selectedMedia.length) {
-                          setState(() {
-                            _model.uploadedLocalFile =
-                                selectedUploadedFiles.first;
-                            _model.uploadedFileUrl = downloadUrls.first;
-                          });
-                        } else {
-                          setState(() {});
-                          return;
-                        }
-                      }
-
-                      setState(() {
-                        _model.imagePath = _model.uploadedFileUrl;
-                      });
-                    },
-                    text: 'Add Image',
-                    options: FFButtonOptions(
-                      width: 130.0,
-                      height: 40.0,
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: FlutterFlowTheme.of(context).primary,
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                fontFamily: 'Poppins',
-                                color: Colors.white,
-                                fontSize: 20.0,
-                              ),
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
                 Padding(
                   padding:
                       EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
@@ -389,6 +309,74 @@ class _QuizCreatorPageWidgetState extends State<QuizCreatorPageWidget> {
                         _model.optionDControllerValidator.asValidator(context),
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 0.0, 0.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Text(
+                        'Correct Index',
+                        style: FlutterFlowTheme.of(context).bodyMedium,
+                      ),
+                      Container(
+                        width: 80.0,
+                        child: TextFormField(
+                          controller: _model.textController6,
+                          autofocus: true,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            hintText: 'correct index',
+                            hintStyle: FlutterFlowTheme.of(context).bodySmall,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: FlutterFlowTheme.of(context).primary,
+                                width: 1.0,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4.0),
+                                topRight: Radius.circular(4.0),
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1.0,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4.0),
+                                topRight: Radius.circular(4.0),
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1.0,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4.0),
+                                topRight: Radius.circular(4.0),
+                              ),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0x00000000),
+                                width: 1.0,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(4.0),
+                                topRight: Radius.circular(4.0),
+                              ),
+                            ),
+                          ),
+                          style: FlutterFlowTheme.of(context).bodyMedium,
+                          keyboardType: TextInputType.number,
+                          validator: _model.textController6Validator
+                              .asValidator(context),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -406,8 +394,8 @@ class _QuizCreatorPageWidgetState extends State<QuizCreatorPageWidget> {
                                   createQuestionStruct(
                                     questionDesc:
                                         _model.questionController.text,
-                                    correctIndex: 1,
-                                    image: _model.uploadedFileUrl,
+                                    correctIndex: int.tryParse(
+                                        _model.textController6.text),
                                     fieldValues: {
                                       'options': functions.createIntoList(
                                           _model.optionAController.text,
@@ -433,9 +421,7 @@ class _QuizCreatorPageWidgetState extends State<QuizCreatorPageWidget> {
                               _model.optionBController?.clear();
                               _model.optionCController?.clear();
                               _model.optionDController?.clear();
-                            });
-                            setState(() {
-                              _model.imagePath = null;
+                              _model.textController6?.clear();
                             });
                           },
                           text: 'Save And Go To Next Question',
@@ -541,14 +527,6 @@ class _QuizCreatorPageWidgetState extends State<QuizCreatorPageWidget> {
                     ),
                   ],
                 ),
-                if (_model.uploadedFileUrl != null &&
-                    _model.uploadedFileUrl != '')
-                  Image.network(
-                    _model.imagePath!,
-                    width: 100.0,
-                    height: 100.0,
-                    fit: BoxFit.cover,
-                  ),
               ],
             ),
           ),
