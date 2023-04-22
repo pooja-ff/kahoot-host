@@ -434,6 +434,9 @@ class _QuizCreatorPageWidgetState extends State<QuizCreatorPageWidget> {
                               _model.optionCController?.clear();
                               _model.optionDController?.clear();
                             });
+                            setState(() {
+                              _model.imagePath = null;
+                            });
                           },
                           text: 'Save And Go To Next Question',
                           options: FFButtonOptions(
